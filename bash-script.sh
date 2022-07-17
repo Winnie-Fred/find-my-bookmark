@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
-echo "This tool supports the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser"
+printf "This tool supports the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser\n"
 KEY_WORD=${1?Error: No keyword given. Enter in the keyword you are searching for as an argument. A sample command would be "./bash-script.sh 'example keyword'"}
+
+check=`ps -ef|grep firefox|grep -v grep`
+if [ $? -eq 0 ]
+then
+	echo -e "\n"
+	read -rsn1 -p "Firefox is running. If you want any bookmarks you have added since you opened Firefox to be included in this search, close the browser. Otherwise, Press any key to continue . . . : ";
+	echo -e "\n"
+fi
 
 
 export_chromium_browsers_bookmarks () {
@@ -50,15 +58,17 @@ then
 
     readarray -td '' bookmarks_dir < <(find $FIREFOX_DIR -type f \( -name 'places.sqlite' \) -print0)
 
-
+    
     for bookmarks_dir in "${bookmarks_dir[@]}"
     do
         echo "Directory - '$bookmarks_dir'"
         if [ -s "$bookmarks_dir" ]
         then
             echo "Bookmarks found"
+	    cp "$bookmarks_dir" new_places.sqlite
+            new_mozilla_sqlite_file=new_places.sqlite
            
-            sqlite3 "$bookmarks_dir" "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq --arg KEY_WORD "${KEY_WORD,,}" '{"name" : .name, "url" : .url} | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))'  >> bookmarks.md
+            sqlite3 "$new_mozilla_sqlite_file" "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq --arg KEY_WORD "${KEY_WORD,,}" '{"name" : .name, "url" : .url}  | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' >> bookmarks.md
         fi 
     done 
   
