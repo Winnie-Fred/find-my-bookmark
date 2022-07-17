@@ -7,7 +7,7 @@ check=`ps -ef|grep firefox|grep -v grep`
 if [ $? -eq 0 ]
 then
 	echo -e "\n"
-	read -rsn1 -p "Firefox is running. If you want any bookmarks you have added since you opened Firefox to be included in this search, close the browser. Otherwise, enter any key to continue: ";
+	read -rsn1 -p "Firefox is running. If you want any bookmarks you have added since you opened Firefox to be included in this search, close the browser. Otherwise, Press any key to continue . . . : ";
 	echo -e "\n"
 fi
 
