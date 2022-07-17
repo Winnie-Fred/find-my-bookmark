@@ -15,18 +15,13 @@ export_chromium_browsers_bookmarks () {
         do
             echo "Directory - '$bookmarks_dir'"
             if [ -s "$bookmarks_dir" ]
-            then
-                
-                jq --arg KEY_WORD "${KEY_WORD,,}" '.roots.bookmark_bar.children[] | {"name" : .name, "url" : .url} | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' "$bookmarks_dir" >> bookmarks.md
-                jq --arg KEY_WORD "${KEY_WORD,,}" '.roots.other.children[] | {"name" : .name, "url" : .url} | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' "$bookmarks_dir" >> bookmarks.md
-                jq --arg KEY_WORD "${KEY_WORD,,}" '.roots.synced.children[] | {"name" : .name, "url" : .url} | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' "$bookmarks_dir" >> bookmarks.md
-               
+            then		
+
+		jq --arg KEY_WORD "${KEY_WORD,,}" '.. | objects | with_entries(select(.key | in({"name":"", "url":""}))) | select(. != {}) | select(has("url")) | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' "$bookmarks_dir" >> bookmarks.md
+          	
             fi 
-
         done 
-      
     fi
-
 }
 
 
