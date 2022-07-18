@@ -3,7 +3,8 @@
 printf "This tool supports the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser\n"
 KEY_WORD=${1?Error: No keyword given. Enter in the keyword you are searching for as an argument. A sample command would be "./bash-script.sh 'example keyword'"}
 
-check=`ps -ef|grep firefox|grep -v grep`
+
+check=`pgrep firefox`
 if [ $? -eq 0 ]
 then
 	echo -e "\n"
