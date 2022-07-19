@@ -22,7 +22,7 @@ You can check if you have the right dependencies with `bash --version`, `jq --ve
 Install dependencies with `sudo apt install <dependency>`
 
 #### How to run the project
-You can use the project locally on your comouter by following these steps:
+You can use the project locally on your computer by following these steps:
 - Ensure you have the right dependencies
 - cd into the directory of the script and make it executable with `chmod u+x find-my-bookmark.sh`
 - Enter `./find-my-bookmark.sh <keyword>`. For example: `./find-my-bookmark.sh "example keyword"`
