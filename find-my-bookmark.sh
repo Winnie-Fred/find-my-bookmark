@@ -14,6 +14,8 @@ then
 fi
 
 
+
+
 export_chromium_browsers_bookmarks () {
     if [ -d $1 ]
     then
@@ -34,22 +36,18 @@ export_chromium_browsers_bookmarks () {
     fi
 }
 
-
-
-# GOOGLE CHROME
 GOOGLE_CHROME_DIR="$HOME/.config/google-chrome"
-export_chromium_browsers_bookmarks $GOOGLE_CHROME_DIR
 
-
-# CHROMIUM
 CHROMIUM_DIR="$HOME/.config/chromium"
-export_chromium_browsers_bookmarks $CHROMIUM_DIR
 
-
-
-# BRAVE
 BRAVE_DIR="$HOME/.config/BraveSoftware"
-export_chromium_browsers_bookmarks $BRAVE_DIR     
+
+chromium_bookmarks_directories=($GOOGLE_CHROME_DIR $CHROMIUM_DIR $BRAVE_DIR)
+
+for directory in ${chromium_bookmarks_directories[@]}
+do
+	export_chromium_browsers_bookmarks $directory
+done
 
 
 
