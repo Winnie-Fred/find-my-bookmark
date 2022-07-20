@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-printf "This tool supports the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser\n"
+printf "Welcome to 'find my bookmark'.\nThis tool searches for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser\n"
+printf "Searching . . . \n"
 KEY_WORD=${1?Error: No keyword given. Enter in the keyword you are searching for as an argument. A sample command would be "./bash-script.sh 'example keyword'"}
 
 
@@ -12,8 +13,6 @@ then
 	read -rsn1 -p "Otherwise, Press any key to continue . . .  ";
 	echo -e "\n"
 fi
-
-
 
 
 export_chromium_browsers_bookmarks () {
@@ -36,6 +35,7 @@ export_chromium_browsers_bookmarks () {
     fi
 }
 
+
 GOOGLE_CHROME_DIR="$HOME/.config/google-chrome"
 
 CHROMIUM_DIR="$HOME/.config/chromium"
@@ -48,7 +48,6 @@ for directory in ${chromium_bookmarks_directories[@]}
 do
 	export_chromium_browsers_bookmarks $directory
 done
-
 
 
 # MOZILLA FIREFOX
@@ -74,4 +73,11 @@ then
         fi 
     done 
   
+fi
+
+if [ -s bookmarks.md ]
+then
+	echo "Search complete. Open bookmarks.md in this directory to see the search results"
+else
+	echo "No bookmarks found. Try another keyword?"
 fi
