@@ -14,6 +14,8 @@ then
 	echo -e "\n"
 fi
 
+echo "" | tee 'bookmarks.md' > /dev/null # This overwrites the file if it already exists and empties it.
+
 
 export_chromium_browsers_bookmarks () {
     if [ -d $1 ]
@@ -81,3 +83,5 @@ then
 else
 	echo "No bookmarks found. Try another keyword?"
 fi
+
+readarray -t < <(cat bookmarks.md >> jq '.name')
