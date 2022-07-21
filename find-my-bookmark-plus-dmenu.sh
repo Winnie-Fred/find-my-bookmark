@@ -16,7 +16,7 @@ fi
 
 printf "Searching . . . \n"
 
-echo "" | tee 'bookmarks.md' > /dev/null # This overwrites the file if it already exists and empties it.
+> bookmarks.md # This overwrites the file if it already exists, otherwise, creates a new one and empties it.
 
 
 export_chromium_browsers_bookmarks () {
@@ -71,7 +71,7 @@ then
 			
 			if [ $(sqlite3 new_places.sqlite "SELECT count(*) name FROM sqlite_master WHERE type='table' AND name='moz_bookmarks' OR name='moz_places' COLLATE NOCASE;") -eq 2 ]
 			then
-		        sqlite3 new_places.sqlite "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq --arg KEY_WORD "${KEY_WORD,,}" '{"name" : .name, "url" : .url}  | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' >> bookmarks.md
+		        sqlite3 new_places.sqlite "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq --arg KEY_WORD "${KEY_WORD,,}" 'with_entries(select(.key | in({"name":"", "url":""}))) | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' >> bookmarks.md
 			fi
 			           
         fi 
@@ -82,43 +82,43 @@ fi
 if [ -s bookmarks.md ]
 then
 	echo "Search complete. Choose your bookmark from the menu or open bookmarks.md in this directory to see the search results"
+	readarray -t name_array < <(cat bookmarks.md | jq -r '.name')
+	readarray -t url_array < <(cat bookmarks.md | jq -r '.url')
+
+	declare -a options
+
+	for i in "${!name_array[@]}"
+	do
+		if ! [[ ${name_array[i]} ]]
+		then
+			options+=("${url_array[i]}")
+		else
+			options+=("${name_array[i]}   ====>   ${url_array[i]}")
+		fi
+	done
+
+	options+=("quit")
+
+
+	choice=$(printf '%s\n' "${options[@]}" | dmenu -i -l 40 -p "Select bookmark")
+
+
+	if [[ "$choice" == quit ]]
+	then
+		echo "Program terminated." && exit 1
+	elif [ "$choice" ]
+	then
+		cfg=$(printf '%s\n' "${choice}" | awk '{print $NF}')
+		xdg-open "$cfg" & # Opens url with default browser as background process
+	else
+		echo "Program terminated." && exit 1
+	fi
 else
 	echo "No bookmarks found. Try another keyword?"
 fi
 
 
 
-readarray -t name_array < <(cat bookmarks.md | jq -r '.name')
-readarray -t url_array < <(cat bookmarks.md | jq -r '.url')
-
-declare -a options
-
-for i in "${!name_array[@]}"
-do
-	if ! [[ ${name_array[i]} ]]
-	then
-		options+=("${url_array[i]}")
-	else
-		options+=("${name_array[i]}   ====>   ${url_array[i]}")
-	fi
-done
-
-options+=("quit")
-
-
-choice=$(printf '%s\n' "${options[@]}" | dmenu -i -l 40 -p "Select bookmark")
-
-
-if [[ "$choice" == quit ]]
-then
-	echo "Program terminated." && exit 1
-elif [ "$choice" ]
-then
-	cfg=$(printf '%s\n' "${choice}" | awk '{print $NF}')
-	xdg-open "$cfg" & # Opens url with default browser as background process
-else
-	echo "Program terminated." && exit 1
-fi
 
 
 
