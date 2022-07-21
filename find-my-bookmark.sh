@@ -16,7 +16,7 @@ fi
 
 printf "Searching . . . \n"
 
-echo "" | tee 'bookmarks.md' > /dev/null # This overwrites the file if it already exists and empties it.
+> bookmarks.md # This overwrites the file if it already exists, otherwise, creates a new one and empties it.
 
 export_chromium_browsers_bookmarks () {
     if [ -d $1 ]
@@ -67,12 +67,14 @@ then
         if [ -s "$bookmarks_dir" ]
         then
 	    	cp "$bookmarks_dir" new_places.sqlite
+
 			
 			if [ $(sqlite3 new_places.sqlite "SELECT count(*) name FROM sqlite_master WHERE type='table' AND name='moz_bookmarks' OR name='moz_places' COLLATE NOCASE;") -eq 2 ]
 			then
-		        sqlite3 new_places.sqlite "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq --arg KEY_WORD "${KEY_WORD,,}" '{"name" : .name, "url" : .url}  | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' >> bookmarks.md
+		        sqlite3 new_places.sqlite "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq --arg KEY_WORD "${KEY_WORD,,}" 'with_entries(select(.key | in({"name":"", "url":""}))) | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' >> bookmarks.md
 			fi
-			           
+
+	           
         fi 
     done 
   
