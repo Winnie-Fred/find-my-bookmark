@@ -1,6 +1,6 @@
 # find-my-bookmark
 
-### A simple bash script for Linux to search for a bookmark among all your bookmarks in Google Chrome, Chromium, Brave and Mozilla Firefox Browsers 
+### A simple bash script for Linux to search for a bookmark among all your bookmarks.
 
 #### About the Project
 
@@ -8,6 +8,13 @@ If you use different browsers, your bookmarks are most likely stored across all 
 
 #### Why find-my-bookmark? Why shell scripting?
 Shell scripting is used because I wanted to try my hands on an actual project after watching a Bash script crash course video. I chose this project to learn more about Linux and shell scripting. 
+
+#### Supported Browsers
+This script searches only these browsers:
+- Google Chrome Browser
+- Chromium Browser
+- Brave Browser
+- Mozilla Firefox Browser
 
 #### Possible Update
 Currently, the results of the bookmarks search are appended to a markdown file. A future feature I hope to implement is to add Rofi to the project to give it a simple and minimalist GUI interface.
