@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 printf "Welcome to 'find my bookmark'.\nThis tool searches for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser\n"
-printf "Searching . . . \n"
+
 KEY_WORD=${1?Error: No keyword given. Enter in the keyword you are searching for as an argument. A sample command would be "./bash-script.sh 'example keyword'"}
 
 
@@ -13,6 +13,8 @@ then
 	read -rsn1 -p "Otherwise, Press any key to continue . . .  ";
 	echo -e "\n"
 fi
+
+printf "Searching . . . \n"
 
 echo "" | tee 'bookmarks.md' > /dev/null # This overwrites the file if it already exists and empties it.
 
@@ -79,9 +81,47 @@ fi
 
 if [ -s bookmarks.md ]
 then
-	echo "Search complete. Open bookmarks.md in this directory to see the search results"
+	echo "Search complete. Choose your bookmark from the menu or open bookmarks.md in this directory to see the search results"
 else
 	echo "No bookmarks found. Try another keyword?"
 fi
 
-readarray -t < <(cat bookmarks.md >> jq '.name')
+
+
+readarray -t name_array < <(cat bookmarks.md | jq -r '.name')
+readarray -t url_array < <(cat bookmarks.md | jq -r '.url')
+
+declare -a options
+
+for i in "${!name_array[@]}"
+do
+	if ! [[ ${name_array[i]} ]]
+	then
+		options+=("${url_array[i]}")
+	else
+		options+=("${name_array[i]}   ====>   ${url_array[i]}")
+	fi
+done
+
+options+=("quit")
+
+
+choice=$(printf '%s\n' "${options[@]}" | dmenu -i -l 40 -p "Select bookmark")
+
+
+if [[ "$choice" == quit ]]
+then
+	echo "Program terminated." && exit 1
+elif [ "$choice" ]
+then
+	cfg=$(printf '%s\n' "${choice}" | awk '{print $NF}')
+	xdg-open "$cfg" & # Opens url with default browser as background process
+else
+	echo "Program terminated." && exit 1
+fi
+
+
+
+
+
+
