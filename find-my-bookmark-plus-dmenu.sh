@@ -84,4 +84,3 @@ else
 	echo "No bookmarks found. Try another keyword?"
 fi
 
-readarray -t < <(cat bookmarks.md >> jq '.name')
