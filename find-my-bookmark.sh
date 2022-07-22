@@ -93,7 +93,8 @@ fi
 
 if [ -s bookmarks.md ]
 then
-	echo "Search complete. Open bookmarks.md in this directory to see the search results"
+	echo "Search complete. Check bookmarks.md in this directory for the search results"
+	xdg-open bookmarks.md # Opens file with default text editor
 else
 	echo "No bookmarks found. Try another keyword?"
 fi
