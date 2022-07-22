@@ -2,8 +2,19 @@
 
 printf "Welcome to 'find my bookmark'.\nThis tool searches for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser\n"
 
-KEY_WORD=${1?Error: No keyword given. Enter in the keyword you are searching for as an argument. A sample command would be "./find-my-bookmark.sh 'example keyword'"}
+KEY_WORD=${1?Error: No keyword given. Usage: "$0 'example keyword'"}
 
+
+# This exits and prints an error when the keyword is an empty string, a space or spaces. 
+# No check for tabs or any other type of whitespace is done and they are treated as strings
+# since they may be valid searches such as "\t" 
+# e.g. "regex - What is the difference between \\s and \\t? - Stack Overflow" is a valid bookmark name
+
+if [[ -z "${KEY_WORD// }" ]]
+then
+	echo "$0: line ${LINENO}: Error: Invalid input. Usage: ""$0 'example keyword'""";
+	exit 1
+fi
 
 check=`pgrep firefox`
 if [ $? -eq 0 ]
@@ -27,7 +38,7 @@ export_chromium_browsers_bookmarks () {
 
         for bookmarks_dir in "${bookmarks_dir[@]}"
         do
-in Google Chrome, Chromium, Brave and Mozilla Firefox Browsers 
+
             if [ -s "$bookmarks_dir" ]
             then		
 
