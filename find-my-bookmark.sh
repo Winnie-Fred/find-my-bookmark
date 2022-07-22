@@ -96,7 +96,7 @@ fi
 # Open bookmarks.md or open dmenu with list of bookmarks if at least one match was found
 if [ -s bookmarks.md ]
 then
-	if ! [ -z ${2+x} ] && [[ "$2" = "dmenu" ]]
+	if ! [ -z ${2+x} ] && [[ "$2" = "-dmenu" ]]
 	then
 
 		readarray -t name_array < <(cat bookmarks.md | jq -r '.name')
