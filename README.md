@@ -17,14 +17,15 @@ This script searches only these browsers:
 - Mozilla Firefox Browser
 
 #### Possible Update
-Currently, the results of the bookmarks search are appended to a markdown file. A future feature I hope to implement is to add Rofi to the project to give it a simple and minimalist GUI interface.
+Currently, the results of the bookmarks search are appended to a markdown file and can optionally be displayed with dmenu. A future feature I hope to implement is to add an option for rofi to the project for those who prefer it to dmenu.
  
 #### Dependencies
 - bash v4.4.0+
 - jq v1.5+
 - sqlite3 v3.29.0+
+- dmenu v4.5+ (Optional)
 
-You can check if you have the right dependencies with `bash --version`, `jq --version` or `sqlite3 --version`<br>
+You can check if you have the right dependencies with `bash --version`, `jq --version`, `sqlite3 --version`<br> or `dmenu -v`
 
 
 #### How to run the project
@@ -32,6 +33,7 @@ You can use find-my-bookmark locally on your computer by following these steps:
 - Install and ensure you have the right dependencies
 - cd into the directory of the script and make it executable with `chmod u+x find-my-bookmark.sh`
 - Enter `./find-my-bookmark.sh <keyword>` to find your bookmark, where "keyword" is the word or words in the bookmark you are searching for. For example: `./find-my-bookmark.sh "example keyword"`
+- If you want a GUI interface to interact with the script with, install dmenu and run the program like so instead: `./find-my-bookmark.sh "example keyword" dmenu`
 
 #### Tip
 If you are searching for more than one word, wrap them in quotes like this: `./find-my-bookmark.sh "find my bookmark"` instead of this: `./find-my-bookmark.sh find my bookmark`. The latter will only look for the first word, "find".
