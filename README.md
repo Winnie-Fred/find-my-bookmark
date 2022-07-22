@@ -33,7 +33,7 @@ You can use find-my-bookmark locally on your computer by following these steps:
 - Install and ensure you have the right dependencies
 - cd into the directory of the script and make it executable with `chmod u+x find-my-bookmark.sh`
 - Enter `./find-my-bookmark.sh <keyword>` to find your bookmark, where "keyword" is the word or words in the bookmark you are searching for. For example: `./find-my-bookmark.sh "example keyword"`
-- If you want a GUI interface to interact with the script with, install dmenu and run the program like so instead: `./find-my-bookmark.sh "example keyword" dmenu`
+- If you want a GUI interface to interact with the script with, install dmenu and run the program with the dmenu flag like so instead: `./find-my-bookmark.sh "example keyword" -dmenu`
 
 #### Tip
 If you are searching for more than one word, wrap them in quotes like this: `./find-my-bookmark.sh "find my bookmark"` instead of this: `./find-my-bookmark.sh find my bookmark`. The latter will only look for the first word, "find".
