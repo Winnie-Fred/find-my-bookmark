@@ -4,7 +4,6 @@ printf "Welcome to 'find my bookmark'.\nThis tool searches for your bookmark in 
 
 KEY_WORD=${1?Error: No keyword given. Enter in the keyword you are searching for as an argument. A sample command would be "./find-my-bookmark.sh 'example keyword'"}
 
-
 check=`pgrep firefox`
 if [ $? -eq 0 ]
 then
@@ -27,7 +26,7 @@ export_chromium_browsers_bookmarks () {
 
         for bookmarks_dir in "${bookmarks_dir[@]}"
         do
-in Google Chrome, Chromium, Brave and Mozilla Firefox Browsers 
+
             if [ -s "$bookmarks_dir" ]
             then		
 
