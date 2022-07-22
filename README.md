@@ -36,7 +36,7 @@ You can use find-my-bookmark locally on your computer by following these steps:
 #### Tip
 If you are searching for more than one word, wrap them in quotes like this: `./find-my-bookmark.sh "find my bookmark"` instead of this: `./find-my-bookmark.sh find my bookmark`. The latter will only look for the first word, "find".
 
-***Note: This script only searches Google Chrome, Chromium, Brave and Mozilla Firefox Browsers. It will only find bookmarks on various Linux distributions only***.
+***Note: This script only searches Google Chrome, Chromium, Brave and Mozilla Firefox Browsers. It will only find bookmarks on various Linux distributions only (preferably those installed with a GUI)***.
 
 #### Credits and Inspiration
 This project is inspired by the bookmarks keeper project on Crio at crio.do [here](https://www.crio.do/projects/bash-bookmarks-keeper/)
