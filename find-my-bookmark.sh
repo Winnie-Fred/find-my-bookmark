@@ -6,9 +6,10 @@ KEY_WORD=${1?Error: No keyword given. Usage: "$0 'example keyword'"}
 
 
 # This exits and prints an error when the keyword is an empty string, a space or spaces. 
-# No check for tabs or any other type of whitespace is done and they are treated as strings
+# No check for tabs or any other type of whitespace is done as they are treated as strings
 # since they may be valid searches such as "\t" 
 # e.g. "regex - What is the difference between \\s and \\t? - Stack Overflow" is a valid bookmark name
+
 
 if [[ -z "${KEY_WORD// }" ]]
 then
@@ -25,9 +26,10 @@ then
 	echo -e "\n"
 fi
 
-printf "Searching . . . \n"
+echo "Searching for '"${KEY_WORD}"' . . ."
+echo -e "\n"
 
-> bookmarks.md # This overwrites the file if it already exists, otherwise, creates a new one and empties it.
+> bookmarks.md  # This overwrites the file if it already exists, otherwise, creates a new one and empties it.
 
 export_chromium_browsers_bookmarks () {
     if [ -d $1 ]
@@ -91,10 +93,52 @@ then
   
 fi
 
+# Open bookmarks.md or open dmenu with list of bookmarks if at least one match was found
 if [ -s bookmarks.md ]
 then
-	echo "Search complete. Check bookmarks.md in this directory for the search results"
-	xdg-open bookmarks.md # Opens file with default text editor
+	if ! [ -z ${2+x} ] && [[ "$2" = "dmenu" ]]
+	then
+
+		readarray -t name_array < <(cat bookmarks.md | jq -r '.name')
+		readarray -t url_array < <(cat bookmarks.md | jq -r '.url')
+
+		declare -a options
+
+		for i in "${!name_array[@]}"
+		do
+			if ! [[ ${name_array[i]} ]]
+			then
+				options+=("${url_array[i]}")
+			else
+				options+=("${name_array[i]}   ====>   ${url_array[i]}")
+			fi
+		done
+
+		options+=("quit")
+
+		echo "Search complete. Choose your bookmark from the menu or open bookmarks.md in this directory to see the search results"
+
+		choice=$(printf '%s\n' "${options[@]}" | dmenu -i -l 40 -p "Select bookmark")
+
+
+		if [[ "$choice" == quit ]]
+		then
+			echo "Program terminated." && exit 1
+		elif [ "$choice" ]
+		then
+			cfg=$(printf '%s\n' "${choice}" | awk '{print $NF}')
+			xdg-open "$cfg" &  # Opens url with default browser as background process
+		else
+			echo "Program terminated." && exit 1
+		fi
+	else
+
+		echo "Search complete. Check bookmarks.md in this directory for the search results"
+		xdg-open bookmarks.md  # Opens file with default text editor
+	fi
 else
 	echo "No bookmarks found. Try another keyword?"
 fi
+
+sed -e '$a\' bookmarks.md  # Adds newline at EOF if none exists in bookmarks.md
+
