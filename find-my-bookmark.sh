@@ -1,8 +1,43 @@
 #!/usr/bin/env bash
 
-printf "Welcome to 'find my bookmark'.\nThis tool searches for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser\n"
+printf "Welcome to 'find my bookmark'.\nThis tool searches for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser.\n\n"
 
-KEY_WORD=${1?Error: No keyword given. Usage: "$0 'example keyword'"}
+display_help() {
+	echo
+	echo "Usage: "$0" --search=[SEARCH] [-dmenu] [-h | --help]"
+	echo
+	echo "where:"
+	echo "    --search=SEARCH        SEARCH is the keyword or keywords contained in the bookmark you are searching for"
+	echo "    -dmenu                 shows the bookmarks that match the search in a menu with dmenu"
+	echo "    -h | --help            shows this help text"
+	echo
+	echo "Tip: Enclose 'SEARCH' in quotes especially if it contains space(s)"	
+}
+
+
+while test $# -gt 0; do
+  case "$1" in
+    -h|--help) display_help; exit 0; ;;
+	-dmenu)
+	  export with_dmenu=true
+	  shift
+      ;;
+    --search*)
+	  if [[ $1 == *"="* ]]
+	  # Only tries to get the value of the --search option if $1 != "--search" as string manipulation on $1 
+      # would return "--search" because there is no "=" character
+	  then
+		  export KEY_WORD=`echo ${1#*=}`
+	  else
+		  unset KEY_WORD
+      fi;
+      shift
+      ;;
+    *) echo "Unknown parameter or option passed: '"$1"'"; display_help; exit 0;
+
+      ;;
+  esac
+done
 
 
 # This exits and prints an error when the keyword is an empty string, a space or spaces. 
@@ -11,11 +46,14 @@ KEY_WORD=${1?Error: No keyword given. Usage: "$0 'example keyword'"}
 # e.g. "regex - What is the difference between \\s and \\t? - Stack Overflow" is a valid bookmark name
 
 
+KEY_WORD=${KEY_WORD?"Error: No keyword given. $(display_help)"}
+
 if [[ -z "${KEY_WORD// }" ]]
 then
-	echo "$0: line ${LINENO}: Error: Invalid input. Usage: ""$0 'example keyword'""";
+	echo "$0: line ${LINENO}: Error: Invalid input. Search must contain characters other than space";
 	exit 1
 fi
+
 
 check=`pgrep firefox`
 if [ $? -eq 0 ]
@@ -96,7 +134,7 @@ fi
 # Open bookmarks.md or open dmenu with list of bookmarks if at least one match was found
 if [ -s bookmarks.md ]
 then
-	if ! [ -z ${2+x} ] && [[ "$2" = "-dmenu" ]]
+	if [ "$with_dmenu" = true ]
 	then
 
 		readarray -t name_array < <(cat bookmarks.md | jq -r '.name')
@@ -137,8 +175,6 @@ then
 		xdg-open bookmarks.md  # Opens file with default text editor
 	fi
 else
-	echo "No bookmarks found. Try another keyword?"
+	echo "No bookmarks found. Check your spelling. You could also try different or more general keywords"
 fi
-
-sed -e '$a\' bookmarks.md  # Adds newline at EOF if none exists in bookmarks.md
 
