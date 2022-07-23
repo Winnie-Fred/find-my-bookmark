@@ -32,7 +32,7 @@ You can check if you have the right dependencies with `bash --version`, `jq --ve
 You can use find-my-bookmark locally on your computer by following these steps:
 - Install and ensure you have the right dependencies
 - cd into the directory of the script and make it executable with `chmod u+x find-my-bookmark.sh`
-- Enter `./find-my-bookmark.sh --search=[SEARCH]` to find your bookmark, where "SEARCH" is the keyword or keywords in the bookmark you are searching for. For example: `./find-my-bookmark.sh --search="example keyword"`
+- Enter `./find-my-bookmark.sh --search=[SEARCH]` to find your bookmark, where "SEARCH" is the keyword or keywords in the name or url of the bookmark you are searching for. For example: `./find-my-bookmark.sh --search="example keyword"`
 - If you want a GUI interface to interact with the script with, install dmenu and run the program with the dmenu flag like so instead: `./find-my-bookmark.sh --search="example keyword" -dmenu`
 
 #### Tip
