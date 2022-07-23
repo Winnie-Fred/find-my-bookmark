@@ -7,7 +7,7 @@ display_help() {
 	echo "Usage: "$0" --search=[SEARCH] [-dmenu] [-h | --help]"
 	echo
 	echo "where:"
-	echo "    --search=SEARCH        SEARCH is the keyword or keywords contained in the bookmark you are searching for"
+	echo "    --search=SEARCH        SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"
 	echo "    -dmenu                 shows the bookmarks that match the search in a menu with dmenu"
 	echo "    -h | --help            shows this help text"
 	echo
