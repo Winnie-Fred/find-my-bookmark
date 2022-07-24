@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
-printf "Welcome to 'find my bookmark'.\nThis tool searches for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser.\n\n"
+printf "Welcome to 'find my bookmark'.\n"
 
 display_help() {
 	echo
+	printf "A script to search for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser.\n\n"
 	echo "Usage: "$0" --search=[SEARCH] [-dmenu] [-h | --help]"
 	echo
 	echo "where:"
 	echo "    --search=SEARCH        SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"
+	echo
+	echo "Optional:"	
 	echo "    -dmenu                 shows the bookmarks that match the search in a menu with dmenu"
-	echo "    -h | --help            shows this help text"
+	echo "    -rofi                  shows the bookmarks that match the search in a menu with rofi"
+	echo "    -h | --help            shows this help text and exits"
 	echo
 	echo "Tip: Enclose 'SEARCH' in quotes especially if it contains space(s)"	
 }
@@ -20,6 +24,10 @@ while test $# -gt 0; do
     -h|--help) display_help; exit 0; ;;
 	-dmenu)
 	  export with_dmenu=true
+	  shift
+      ;;
+	-rofi)
+	  export with_rofi=true
 	  shift
       ;;
     --search*)
@@ -134,7 +142,7 @@ fi
 # Open bookmarks.md or open dmenu with list of bookmarks if at least one match was found
 if [ -s bookmarks.md ]
 then
-	if [ "$with_dmenu" = true ]
+	if [ "$with_dmenu" = true ] || [ "$with_rofi" = true ]
 	then
 
 		readarray -t name_array < <(cat bookmarks.md | jq -r '.name')
@@ -156,8 +164,13 @@ then
 
 		echo "Search complete. Choose your bookmark from the menu or open bookmarks.md in this directory to see the search results"
 
-		choice=$(printf '%s\n' "${options[@]}" | dmenu -i -l 40 -p "Select bookmark")
-
+		if [ "$with_dmenu" = true ]
+		then
+			choice=$(printf '%s\n' "${options[@]}" | dmenu -i -l 40 -p "Select bookmark")
+		elif [ "$with_rofi" = true ]
+		then
+			choice=$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -l 40 -p "Select bookmark")
+		fi
 
 		if [[ "$choice" == quit ]]
 		then
