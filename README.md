@@ -39,6 +39,7 @@ You can use find-my-bookmark locally on your computer by following these steps:
 - If you want a GUI interface to interact with the script with, install dmenu and run the program with the dmenu flag like so instead: `./find-my-bookmark.sh --search="example keyword" -dmenu`
 - If you prefer rofi, install it and run the script with the rofi flag like so: `./find-my-bookmark.sh --search="example keyword" -rofi`
 - Get help with the -h or --help flag with this command: `./find-my-bookmark.sh -h` or `./find-my-bookmark.sh --help`
+- If you love this tool, and you use it often, and you want to be able to access it from anywhere, consider adding it to your PATH.
 
 ***Note: This script only searches Google Chrome, Chromium, Brave and Mozilla Firefox Browsers. It will only find bookmarks on various Linux distributions only (preferably those installed with a GUI)***.
 
