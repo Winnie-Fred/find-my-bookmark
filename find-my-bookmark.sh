@@ -5,18 +5,22 @@ printf "Welcome to 'find my bookmark'.\n"
 display_help() {
 	echo
 	printf "A script to search for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser.\n\n"
-	echo "Usage: "$0" --search=[SEARCH] [-dmenu] [-h | --help]"
+	echo "usage: "$0" --search=[SEARCH] [-dmenu] [-h | --help]"
 	echo
 	echo "where:"
 	echo "    --search=SEARCH        SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"
 	echo
 	echo "Optional:"	
+	echo "    --show-all             fetches all bookmarks from all the browsers without filtering on a keyword or keywords"
 	echo "    -dmenu                 shows the bookmarks that match the search in a menu with dmenu"
 	echo "    -rofi                  shows the bookmarks that match the search in a menu with rofi"
 	echo "    -h | --help            shows this help text and exits"
 	echo
 	echo "Tip: Enclose 'SEARCH' in quotes especially if it contains space(s)"	
 }
+
+
+show_all=false
 
 
 while test $# -gt 0; do
@@ -30,9 +34,13 @@ while test $# -gt 0; do
 	  export with_rofi=true
 	  shift
       ;;
+	--show-all)
+	  export show_all=true
+	  shift
+      ;;
     --search*)
 	  if [[ $1 == *"="* ]]
-	  # Only tries to get the value of the --search option if $1 != "--search" as string manipulation on $1 
+	  # Only tries to get the value of the --search option if $1 != "--search" because string manipulation on $1 
       # would return "--search" because there is no "=" character
 	  then
 		  export KEY_WORD=`echo ${1#*=}`
@@ -53,13 +61,22 @@ done
 # since they may be valid searches such as "\t" 
 # e.g. "regex - What is the difference between \\s and \\t? - Stack Overflow" is a valid bookmark name
 
-
-KEY_WORD=${KEY_WORD?"Error: No keyword given. $(display_help)"}
-
-if [[ -z "${KEY_WORD// }" ]]
+if [ "$show_all" = false ]
 then
-	echo "$0: line ${LINENO}: Error: Invalid input. Search must contain characters other than space";
-	exit 1
+
+	KEY_WORD=${KEY_WORD?"Error: No keyword given. $(display_help)"}
+
+	if [[ -z "${KEY_WORD// }" ]]
+	then
+		echo "$0: line ${LINENO}: Error: Invalid input. Search must contain characters other than space";
+		exit 1
+	else
+		echo "Searching for '"${KEY_WORD}"' . . ."
+		echo -e "\n"
+	fi
+else
+	echo "Fetching all your bookmarks . . ."
+	echo -e "\n"
 fi
 
 
@@ -72,8 +89,7 @@ then
 	echo -e "\n"
 fi
 
-echo "Searching for '"${KEY_WORD}"' . . ."
-echo -e "\n"
+
 
 > bookmarks.md  # This overwrites the file if it already exists, otherwise, creates a new one and empties it.
 
@@ -89,8 +105,12 @@ export_chromium_browsers_bookmarks () {
 
             if [ -s "$bookmarks_dir" ]
             then		
-
-		jq --arg KEY_WORD "${KEY_WORD,,}" '.. | objects | with_entries(select(.key | in({"name":"", "url":""}))) | select(. != {}) | select(has("url")) | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' "$bookmarks_dir" >> bookmarks.md
+				if [ "$show_all" = false ]
+				then
+					jq --arg KEY_WORD "${KEY_WORD,,}" '.. | objects | with_entries(select(.key | in({"name":"", "url":""}))) | select(. != {}) | select(has("url")) | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' "$bookmarks_dir" >> bookmarks.md
+				else
+					jq '.. | objects | with_entries(select(.key | in({"name":"", "url":""}))) | select(. != {}) | select(has("url"))' "$bookmarks_dir" >> bookmarks.md
+				fi
           	
             fi 
         done 
@@ -130,9 +150,14 @@ then
 			
 			if [ $(sqlite3 new_places.sqlite "SELECT count(*) name FROM sqlite_master WHERE type='table' AND name='moz_bookmarks' OR name='moz_places' COLLATE NOCASE;") -eq 2 ]
 			then
-		        sqlite3 new_places.sqlite "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq --arg KEY_WORD "${KEY_WORD,,}" 'with_entries(select(.key | in({"name":"", "url":""}))) | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' >> bookmarks.md
+				if [ "$show_all" = false ]
+				then
+					sqlite3 new_places.sqlite "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq --arg KEY_WORD "${KEY_WORD,,}" 'with_entries(select(.key | in({"name":"", "url":""}))) | select((.name | ascii_downcase | contains($KEY_WORD)) or (.url | ascii_downcase | contains($KEY_WORD)))' >> bookmarks.md
+				else
+					sqlite3 new_places.sqlite "SELECT json_object('name', IFNULL(moz_places.title , ''), 'url', IFNULL(moz_places.url , '')) FROM moz_places INNER JOIN moz_bookmarks ON moz_places.id = moz_bookmarks.fk;" | jq 'with_entries(select(.key | in({"name":"", "url":""})))' >> bookmarks.md
+				fi
 			fi
-
+			rm new_places.sqlite
 	           
         fi 
     done 
@@ -188,6 +213,11 @@ then
 		xdg-open bookmarks.md  # Opens file with default text editor
 	fi
 else
-	echo "No bookmarks found. Check your spelling. You could also try different or more general keywords"
+	if [ "$show_all" = false ]
+	then
+		echo "No bookmarks found. Check your spelling. You could also try different or more general keywords"
+	else
+		echo "No bookmarks found. Have you bookmarked any webpages yet?"
+	fi
 fi
 
