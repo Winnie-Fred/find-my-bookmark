@@ -57,7 +57,7 @@ while test $# -gt 0; do
 			shift
 			;;
 		*)
-			echo "Unknown parameter or option passed: '"$1"'"; display_help; exit 0;
+			echo "Unknown parameter or option passed: '"$1"'"; display_help; exit 1;
 			;;
 	esac
 done
