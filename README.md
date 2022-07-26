@@ -32,12 +32,13 @@ You can use find-my-bookmark locally on your computer by following these steps:
 - Install and ensure you have the right dependencies
 - cd into the directory of the script and make it executable with `chmod u+x find-my-bookmark.sh`
 - Enter `./find-my-bookmark.sh --search=[SEARCH]` to find your bookmark, where "SEARCH" is the keyword or keywords in the name or url of the bookmark you are searching for. For example: `./find-my-bookmark.sh --search="example keyword"`
+- To fetch all bookmarks without filtering, enter `./find-my-bookmark.sh --show-all`
 
 
 #### Tips
 - If you are searching for more than one word, wrap them in quotes like this: `./find-my-bookmark.sh --search="find my bookmark"` instead of this: `./find-my-bookmark.sh --search=find my bookmark`.
-- If you want a GUI interface to interact with the script with, install dmenu and run the program with the dmenu flag like so instead: `./find-my-bookmark.sh --search="example keyword" -dmenu`
-- If you prefer rofi, install it and run the script with the rofi flag like so: `./find-my-bookmark.sh --search="example keyword" -rofi`
+- If you want a GUI interface to interact with the script with, install dmenu and run the program with the dmenu flag like so instead: `./find-my-bookmark.sh --search="example keyword" -dmenu` or `./find-my-bookmark.sh --show-all -dmenu`
+- If you prefer rofi, install it and run the script with the rofi flag like so: `./find-my-bookmark.sh --search="example keyword" -rofi` or `./find-my-bookmark.sh --show-all -rofi`
 - Get help with the -h or --help flag with this command: `./find-my-bookmark.sh -h` or `./find-my-bookmark.sh --help`
 - If you love this tool, and you use it often, and you want to be able to access it from anywhere, consider adding it to your PATH.
 
