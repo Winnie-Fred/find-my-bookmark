@@ -5,12 +5,10 @@ printf "Welcome to 'find my bookmark'.\n"
 display_help() {
 	echo
 	printf "A script to search for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser.\n\n"
-	echo "usage: "$0" --search=[SEARCH] [-dmenu] [-h | --help]"
+	echo "usage: "$0" [--search=SEARCH] [-dmenu] [--show-all] [-h | --help]"
 	echo
 	echo "where:"
-	echo "    --search=SEARCH        SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"
-	echo
-	echo "Optional:"	
+	echo "    --search=SEARCH        SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"	
 	echo "    --show-all             fetches all bookmarks from all the browsers without filtering on a keyword or keywords"
 	echo "    -dmenu                 shows the bookmarks that match the search in a menu with dmenu"
 	echo "    -rofi                  shows the bookmarks that match the search in a menu with rofi"
@@ -68,27 +66,17 @@ then
 
 	if [[ -z "${KEY_WORD// }" ]]
 	then
-		echo "$0: line ${LINENO}: Error: Invalid input. Search must contain characters other than space";
+		echo "$0: line ${LINENO}: Error: Invalid input. Search may not be empty and must contain characters other than space";
 		exit 1
 	else
 		echo "Searching for '"${KEY_WORD}"' . . ."
-		echo -e "\n"
 	fi
 else
 	echo "Fetching all your bookmarks . . ."
-	echo -e "\n"
+
 fi
 
-
-check=`pgrep firefox`
-if [ $? -eq 0 ]
-then
-	echo -e "\n"
-	echo "Firefox is running. If you want any bookmarks you have added since you opened Firefox to be included in this search, close the browser. "
-	read -rsn1 -p "Otherwise, Press any key to continue . . .  ";
-	echo -e "\n"
-fi
-
+echo -e "\n"
 
 
 > bookmarks.md  # This overwrites the file if it already exists, otherwise, creates a new one and empties it.
