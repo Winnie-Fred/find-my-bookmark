@@ -75,7 +75,7 @@ then
 
 	if [[ -z "${KEY_WORD// }" ]]
 	then
-		echo "$0: line ${LINENO}: Error: Invalid input. Search must contain characters other than space";
+		echo "$0: line ${LINENO}: Error: Invalid input. Search may not be empty and must contain characters other than space";
 		exit 1
 	else
 		echo "Searching for '"${KEY_WORD}"' . . ."
@@ -89,7 +89,6 @@ echo -e "\n"
 check=`pgrep firefox`
 if [ $? -eq 0 ]
 then
-	echo -e "\n"
 	echo "Firefox is running. If you want any bookmarks you have added since you opened Firefox to be included in this search, close the browser. "
 	read -rsn1 -p "Otherwise, Press any key to continue . . .  ";
 	echo -e "\n"
