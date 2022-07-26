@@ -79,13 +79,12 @@ then
 		exit 1
 	else
 		echo "Searching for '"${KEY_WORD}"' . . ."
-		echo -e "\n"
 	fi
 else
 	echo "Fetching all your bookmarks . . ."
-	echo -e "\n"
 fi
 
+echo -e "\n"
 
 check=`pgrep firefox`
 if [ $? -eq 0 ]
