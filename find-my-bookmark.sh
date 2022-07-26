@@ -8,11 +8,11 @@ display_help() {
 	echo "usage: "$0" [--search=SEARCH] [-dmenu] [--show-all] [-h | --help]"
 	echo
 	echo "where:"
-	echo "    --search=SEARCH        SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"	
-	echo "    --show-all             fetches all bookmarks from all the browsers without filtering on a keyword or keywords"
-	echo "    -dmenu                 shows the bookmarks that match the search in a menu with dmenu"
-	echo "    -rofi                  shows the bookmarks that match the search in a menu with rofi"
-	echo "    -h | --help            shows this help text and exits"
+	echo "    --search=SEARCH | -s SEARCH       SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"	
+	echo "    --show-all                        fetches all bookmarks from all the browsers without filtering on a keyword or keywords"
+	echo "    -dmenu                            shows the bookmarks that match the search in a menu with dmenu"
+	echo "    -rofi                             shows the bookmarks that match the search in a menu with rofi"
+	echo "    -h | --help                       shows this help text and exits"
 	echo
 	echo "Tip: Enclose 'SEARCH' in quotes especially if it contains space(s)"	
 }
@@ -22,35 +22,45 @@ show_all=false
 
 
 while test $# -gt 0; do
-  case "$1" in
-    -h|--help) display_help; exit 0; ;;
-	-dmenu)
-	  export with_dmenu=true
-	  shift
-      ;;
-	-rofi)
-	  export with_rofi=true
-	  shift
-      ;;
-	--show-all)
-	  export show_all=true
-	  shift
-      ;;
-    --search*)
-	  if [[ $1 == *"="* ]]
-	  # Only tries to get the value of the --search option if $1 != "--search" because string manipulation on $1 
-      # would return "--search" because there is no "=" character
-	  then
-		  export KEY_WORD=`echo ${1#*=}`
-	  else
-		  unset KEY_WORD
-      fi;
-      shift
-      ;;
-    *) echo "Unknown parameter or option passed: '"$1"'"; display_help; exit 0;
-
-      ;;
-  esac
+	case "$1" in
+		-h|--help) display_help; exit 0; ;;
+		-dmenu)
+			export with_dmenu=true
+			shift
+			;;
+		-rofi)
+			export with_rofi=true
+			shift
+			;;
+		--show-all)
+			export show_all=true
+			shift
+			;;
+		-s)
+			shift
+			if test $# -gt 0; then
+		    	export KEY_WORD=$1
+			else
+				unset KEY_WORD
+			exit 1
+			fi
+			shift
+			;;
+		--search*)
+			if [[ $1 == *"="* ]]
+				# Only tries to get the value of the --search option if $1 != "--search" because string manipulation on $1 
+				# would return "--search" because there is no "=" character
+			then
+				export KEY_WORD=`echo ${1#*=}`
+			else
+				unset KEY_WORD
+			fi;
+			shift
+			;;
+		*)
+			echo "Unknown parameter or option passed: '"$1"'"; display_help; exit 0;
+			;;
+	esac
 done
 
 
@@ -77,6 +87,16 @@ else
 fi
 
 echo -e "\n"
+
+
+check=`pgrep firefox`
+if [ $? -eq 0 ]
+then
+	echo -e "\n"
+	echo "Firefox is running. If you want any bookmarks you have added since you opened Firefox to be included in this search, close the browser. "
+	read -rsn1 -p "Otherwise, Press any key to continue . . .  ";
+	echo -e "\n"
+fi
 
 
 > bookmarks.md  # This overwrites the file if it already exists, otherwise, creates a new one and empties it.
