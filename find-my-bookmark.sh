@@ -75,17 +75,16 @@ then
 
 	if [[ -z "${KEY_WORD// }" ]]
 	then
-		echo "$0: line ${LINENO}: Error: Invalid input. Search may not be empty and must contain characters other than space";
+		echo "$0: line ${LINENO}: Error: Invalid input. Search must contain characters other than space";
 		exit 1
 	else
 		echo "Searching for '"${KEY_WORD}"' . . ."
+		echo -e "\n"
 	fi
 else
 	echo "Fetching all your bookmarks . . ."
-
+	echo -e "\n"
 fi
-
-echo -e "\n"
 
 
 check=`pgrep firefox`
@@ -96,7 +95,6 @@ then
 	read -rsn1 -p "Otherwise, Press any key to continue . . .  ";
 	echo -e "\n"
 fi
-
 
 > bookmarks.md  # This overwrites the file if it already exists, otherwise, creates a new one and empties it.
 
