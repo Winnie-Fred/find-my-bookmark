@@ -5,14 +5,14 @@ printf "Welcome to 'find my bookmark'.\n"
 display_help() {
 	echo
 	printf "A script to search for your bookmark in the following browsers: Google Chrome, Mozilla Firefox, Chromium and Brave Browser.\n\n"
-	echo "usage: "$0" [--search=SEARCH] [-dmenu] [--show-all] [-h | --help]"
+	echo "usage: "$0" [--search=SEARCH | -s SEARCH] [-dmenu | -rofi] [--show-all] [-h | --help]"
 	echo
 	echo "where:"
-	echo "    --search=SEARCH | -s SEARCH       SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"	
-	echo "    --show-all                        fetches all bookmarks from all the browsers without filtering on a keyword or keywords"
-	echo "    -dmenu                            shows the bookmarks that match the search in a menu with dmenu"
-	echo "    -rofi                             shows the bookmarks that match the search in a menu with rofi"
-	echo "    -h | --help                       shows this help text and exits"
+	echo "    --search=SEARCH, -s SEARCH       SEARCH is the keyword or keywords contained in the name or url of the bookmark you are searching for"	
+	echo "    -dmenu                           shows the bookmarks that match the search in a menu with dmenu"
+	echo "    -rofi                            shows the bookmarks that match the search in a menu with rofi"
+	echo "    --show-all                       fetches all bookmarks from all the browsers without filtering on a keyword or keywords"
+	echo "    -h, --help                       shows this help text and exits"
 	echo
 	echo "Tip: Enclose 'SEARCH' in quotes especially if it contains space(s)"	
 }
@@ -42,8 +42,7 @@ while test $# -gt 0; do
 		    	export KEY_WORD=$1
 			else
 				unset KEY_WORD
-			exit 1
-			fi
+			fi;
 			shift
 			;;
 		--search*)
