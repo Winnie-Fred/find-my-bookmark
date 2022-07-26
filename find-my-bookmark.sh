@@ -194,7 +194,7 @@ then
 
 		if [ "$with_dmenu" = true ]
 		then
-			choice=$(printf '%s\n' "${options[@]}" | dmenu -nb '#1e1e1e' -sf '#1e1e1e' -sb '#0d84f4' -nf '#0d84f4' -i -l 40 -p "Select bookmark")
+			choice=$(printf '%s\n' "${options[@]}" | dmenu -nb "#EBCB8B" -nf "#2E3440" -sb "#2E3440" -sf "#EBCB8B" -i -l 40 -p "Select bookmark")
 		elif [ "$with_rofi" = true ]
 		then
 			choice=$(printf '%s\n' "${options[@]}" | rofi -dmenu -i -l 40 -p "Select bookmark")
